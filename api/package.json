@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "scripts": {
+    "watch": "dotenv -e ../config/.env.development -- nodemon -r tsconfig-paths/register --files --watch ./src ./bin/run_server.ts",
+    "start": "dotenv -e ../config/.env.development -- ts-node -r tsconfig-paths/register --files ./bin/run_server.ts",
+    "start:test": "dotenv -e ../config/.env.test -- ts-node -r tsconfig-paths/register --files ./bin/run_server.ts",
+    "lint:check": "eslint --ext .ts .",
+    "lint:fix": "eslint --ext .ts --fix .",
+    "format:check": "prettier --check 'src/**/*.ts'",
+    "format:fix": "prettier --write 'src/**/*.ts'"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.6"
+  }
+}

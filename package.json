@@ -1,0 +1,33 @@
+{
+  "name": "helpfeel_app",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "watch:api": "npm run watch -w api",
+    "watch:front": "npm run watch -w front",
+    "generate": "npm run generate -w batch",
+    "test": "npm run test -w e2e",
+    "test:expand_notation": "npm run test:expand_notation -w e2e",
+    "lint:check": "npm run lint:check --workspaces",
+    "lint:fix": "npm run lint:fix --workspaces",
+    "format:check": "npm run format:check --workspaces",
+    "format:fix": "npm run format:fix --workspaces"
+  },
+  "dependencies": {
+    "dotenv-cli": "^7.3.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.4"
+  },
+  "workspaces": [
+    "api",
+    "batch",
+    "e2e",
+    "front"
+  ]
+}

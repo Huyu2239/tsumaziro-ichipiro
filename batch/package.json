@@ -1,0 +1,14 @@
+{
+  "name": "batch",
+  "scripts": {
+    "generate": "dotenv -e ../config/.env.development -- ts-node -r tsconfig-paths/register --files ./src/generate_faqs.ts",
+    "generate:test": "dotenv -e ../config/.env.test -- ts-node -r tsconfig-paths/register --files ./src/generate_faqs.ts",
+    "lint:check": "eslint --ext .ts .",
+    "lint:fix": "eslint --ext .ts --fix .",
+    "format:check": "prettier --check 'src/**/*.ts'",
+    "format:fix": "prettier --write 'src/**/*.ts'"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.6"
+  }
+}
