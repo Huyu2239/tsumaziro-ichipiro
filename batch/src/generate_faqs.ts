@@ -50,6 +50,39 @@ const getPageTitles = async (projectName: string): Promise<string[]> => {
   return pages.map(page => page.title);
 };
 
+const generateCombinations = (optionsList: string[][]): string[][] => {
+  let combinations: string[][] = [[]];
+
+  for (const options of optionsList) {
+    const temp: string[][] = [];
+    for (const combination of combinations) {
+      for (const option of options) {
+        temp.push(combination.concat(option));
+      }
+    }
+    combinations = temp;
+  }
+
+  return combinations;
+};
+
+const convertTextToQuestions = (text: string): string[] => {
+  const matches = text.matchAll(/\((.+?)\)/g);
+  const optionsList: string[][] = [];
+  for (const match of matches) {
+    optionsList.push(match[1].split("|"));
+  }
+
+  const combinations = generateCombinations(optionsList);
+  return combinations.map(combination => {
+    let result = text;
+    for (const option of combination) {
+      result = result.replace(/\((.+?)\)/, option);
+    }
+    return result;
+  });
+};
+
 /**
  * Convert from text contained on a specific page to FAQs
  * @param projectName
@@ -71,6 +104,8 @@ const convertPageToFaqs = async (
     .filter(line => line.text.trim().startsWith(QUESTION_TEXT_PREFIX))
     // remove prefix of question text.
     .map(line => line.text.replace(QUESTION_TEXT_PREFIX, ""))
+    // expand Helpfeel Notation.
+    .flatMap(expandTargetText => convertTextToQuestions(expandTargetText))
     // convert to FAQ.
     .map(question => {
       return {question, pageTitle};
