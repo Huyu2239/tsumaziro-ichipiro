@@ -1,0 +1,19 @@
+.hidden-photo {
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    position: absolute;
+    cursor: pointer;
+}
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+b {
+    color: red;
+}
+.App {
+    text-align: center;
+    padding: 20px;
+}
