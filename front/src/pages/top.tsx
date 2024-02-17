@@ -51,7 +51,7 @@ export function TopPage(): JSX.Element {
     const hiraganaQuestions = await Promise.all(faqs.map((faq: FAQ) => 
       convertToHiragana(faq.question.toLowerCase())));
     const hiraganaFilterValue = await convertToHiragana(e.target.value.toLowerCase());
-    const filteredFaqs = faqs.filter((_: string, index: int) =>
+    const filteredFaqs = faqs.filter((_: string, index: number) =>
       hiraganaQuestions[index].includes(hiraganaFilterValue)
     );
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
