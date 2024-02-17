@@ -2,6 +2,9 @@ import {useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import '../answer.css';
 
+import { convertToNinja } from "./convertToNinja";
+
+
 type Page = {
   lines: Array<{id: string; text: string}>;
 };
@@ -13,13 +16,17 @@ export function AnswerPage(): JSX.Element {
   useEffect(() => {
     (async () => {
       const res = await fetch(`/api/pages/${pageTitle}`);
-      const page = (await res.json()) as Page;
-      const lines = page.lines
-        // exclude the first line because it's the page title.
-        .slice(1)
-        // exclude lines that start with "? " because they are texts for questions.
-        .filter(line => !line.text.startsWith("? "));
-      setLines(lines);
+      const page: Page = await res.json();
+
+      // 処理を同期的に行うため、全ての行の変換をPromise.allを使用して待機
+      const processedLinesPromises = page.lines
+        .slice(1) // exclude the first line because it's the page title.
+        .filter(line => !line.text.startsWith("? ")) // exclude lines that start with "? " because they are texts for questions.
+        .map(line => convertToNinja(line.text).then(processedText => ({ id: line.id, text: processedText })));
+
+      const processedLines = await Promise.all(processedLinesPromises);
+
+      setLines(processedLines);
       setIsLoading(false);
       console.log(lines)
     })();
