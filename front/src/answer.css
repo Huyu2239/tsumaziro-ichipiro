@@ -1,7 +1,5 @@
 .is-style-scroll {
     position: relative;
-
-    
     height:400px;
     border: 12px solid transparent;
     border-left-width: 48px;
@@ -32,3 +30,6 @@
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+.progressnone{
+    display:none;
+}
