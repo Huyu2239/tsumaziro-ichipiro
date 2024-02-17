@@ -33,7 +33,7 @@ export function TopPage(): JSX.Element {
       const res = await fetch("/api/faqs");
       const faqs = await res.json();
       localStorage.setItem("faqs", JSON.stringify(faqs));
-      setDefaultFaqs(faqs.slice(0, 5));
+      setDefaultFaqs(uniquePageTitle(faqs).slice(0, 5));
       setIsLoading(false);
     })();
   }, []);
