@@ -35,7 +35,14 @@ export function TopPage(): JSX.Element {
     const filteredFaqs = faqs.filter((faq: FAQ) =>
       faq.question.toLowerCase().includes(e.target.value.toLowerCase()),
     );
-    setFaqs(filteredFaqs);
+    // uniqueFilteredFaqs pagetitleの異なるものをlist化
+    const uniqueFilteredFaqs: FAQ[] = [];
+    for (const filteredFaq of filteredFaqs) {
+      if (!uniqueFilteredFaqs.some((faq) => faq.pageTitle === filteredFaq.pageTitle)) {
+        uniqueFilteredFaqs.push(filteredFaq);
+      }
+    }
+    setFaqs(uniqueFilteredFaqs);
   };
 
   if (isLoading) {
