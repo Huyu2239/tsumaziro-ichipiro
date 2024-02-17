@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import wanko from "@/assets/wanko.svg";
 import prompt from "@/assets/prompt.svg";
+import '../top.css';
+
 
 import {convertToHiragana} from "./hiragana";
 
@@ -59,8 +61,8 @@ export function TopPage(): JSX.Element {
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
     
     setFaqs(uniqueFilteredFaqs);
-    setWidth(uniqueFilteredFaqs.length === 0 ? 0 : Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
     progressPercentage = uniqueFilteredFaqs.length === 0 ? 0 : Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1)));
+    setWidth(progressPercentage);
     console.log(progressPercentage);
   };
   if (isLoading) {
@@ -138,10 +140,12 @@ export function TopPage(): JSX.Element {
           </>
         )}
       </div>
-      <div className={`bg-white shadow-lg shadow-slate-200 w-full ${progressPercentage===0 && input.length> 0 ? "progressnone" : ""}`} >
-        <div className="flex" style={{alignItems: "center", justifyContent: "space-evenly"}}>
+      <div className={`bg-white shadow-lg shadow-slate-200 w-full ${progressPercentage === 0 && input.length > 0 ? "progressnone" : ""}`} >
+        <div className="flex" style={{ alignItems: "center", justifyContent: "space-evenly" }}>
           <div className="w-full bg-slate-100 h-1 m-2 md:w-5/6">
-          <div className="bg-teal-400 h-1 rounded" style={{width: `${width}%`}}>{}</div>
+            <div className="bg-teal-400 h-1 rounded afterninja" style={{ width: `${width}%`, position: "relative" }}>
+              {/* <img src={progressDog} alt="progressDog" width="100px" style={{marginLeft: "auto", display: "block"}} /> */}
+            </div>
           </div>
           <div className="p-1 bg-teal-50 rounded-lg text-xs text-teal-400 font-medium text-center">{`${width}%`}</div>
         </div>
