@@ -114,7 +114,11 @@ export function TopPage(): JSX.Element {
 
               
               {progressPercentage===0 && input.length > 0 ? (
-                <Link to={"/pages/game"}>ゲームをする</Link>
+                <div className="flex justify-center items-center h-28">
+                  <li className="bg-[#57D5C1] p-4 rounded-full font-bold">
+                    <Link to={"/pages/game"}>ゲームをする</Link>
+                  </li>
+                </div>
               ):(
                 faqs.map(faq => (
                   <li
