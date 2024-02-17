@@ -3,6 +3,8 @@ import {Link} from "react-router-dom";
 import wanko from "@/assets/wanko.svg";
 import prompt from "@/assets/prompt.svg";
 
+import {convertToHiragana} from "./hiragana";
+
 type FAQ = {
   question: string;
   pageTitle: string;
@@ -36,7 +38,7 @@ export function TopPage(): JSX.Element {
     })();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     setInput(e.target.value);
     if (e.target.value === "") {
       setFaqs([]);
@@ -45,10 +47,15 @@ export function TopPage(): JSX.Element {
 
     const faqs = JSON.parse(localStorage.getItem("faqs")!);
     const uniqueFaqs = uniquePageTitle(faqs);
-    const filteredFaqs = faqs.filter((faq: FAQ) =>
-      faq.question.toLowerCase().includes(e.target.value.toLowerCase()),
+    
+    const hiraganaQuestions = await Promise.all(faqs.map((faq: FAQ) => 
+      convertToHiragana(faq.question.toLowerCase())));
+    const hiraganaFilterValue = await convertToHiragana(e.target.value.toLowerCase());
+    const filteredFaqs = faqs.filter((_: string, index: int) =>
+      hiraganaQuestions[index].includes(hiraganaFilterValue)
     );
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
+    
     setFaqs(uniqueFilteredFaqs);
     setWidth(Number(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
     console.log(faqs, filteredFaqs);
