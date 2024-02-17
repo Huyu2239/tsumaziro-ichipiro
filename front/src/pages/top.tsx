@@ -50,7 +50,7 @@ export function TopPage(): JSX.Element {
     );
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
     setFaqs(uniqueFilteredFaqs);
-    setWidth(Number(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
+    setWidth(Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
     console.log(faqs, filteredFaqs);
   };
 
