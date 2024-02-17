@@ -9,6 +9,7 @@ type FAQ = {
   question: string;
   pageTitle: string;
 };
+let progressPercentage:number 
 
 // uniqueFilteredFaqs pagetitleの異なるものをlist化
 function uniquePageTitle(faqs: FAQ[]): FAQ[] {
@@ -42,7 +43,8 @@ export function TopPage(): JSX.Element {
     setInput(e.target.value);
     if (e.target.value === "") {
       setFaqs([]);
-      return;
+      setWidth(0)
+      progressPercentage = 0
     }
 
     const faqs = JSON.parse(localStorage.getItem("faqs")!);
@@ -57,14 +59,13 @@ export function TopPage(): JSX.Element {
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
     
     setFaqs(uniqueFilteredFaqs);
-    setWidth(Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
-    console.log(faqs, filteredFaqs);
+    setWidth(uniqueFilteredFaqs.length === 0 ? 0 : Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
+    progressPercentage = uniqueFilteredFaqs.length === 0 ? 0 : Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1)));
+    console.log(progressPercentage);
   };
-
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
   return (
     <>
       <div className="flex flex-col">
@@ -110,24 +111,34 @@ export function TopPage(): JSX.Element {
           <>
             <span className="text-[#2B546A] text-base">{`${faqs.length} questions matched`}</span>
             <ul className="pt-4">
-              {faqs.map(faq => (
-                <li
-                  key={faq.question}
-                  className="pl-2 py-2 text-lg text-[#2B546A] list-inside list-square marker:text-[#57D5C1] hover:bg-[#F6F6F7] rounded-md"
-                >
-                  <Link
-                    to={`/pages/${faq.pageTitle}`}
-                    data-test="question-title"
+
+              
+              {progressPercentage===0 && input.length > 0 ? (
+                <div className="flex justify-center items-center h-28">
+                  <li className="bg-[#57D5C1] p-4 rounded-full font-bold">
+                    <Link to={"/pages/game"}>ゲームをする</Link>
+                  </li>
+                </div>
+              ):(
+                faqs.map(faq => (
+                  <li
+                    key={faq.question}
+                    className="pl-2 py-2 text-lg text-[#2B546A] list-inside list-square marker:text-[#57D5C1] hover:bg-[#F6F6F7] rounded-md"
                   >
-                    {faq.question}
-                  </Link>
-                </li>
-              ))}
+                    <Link
+                      to={`/pages/${faq.pageTitle}`}
+                      data-test="question-title"
+                    >
+                      {faq.question}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </>
         )}
       </div>
-      <div className="bg-white shadow-lg shadow-slate-200 w-full ">
+      <div className={`bg-white shadow-lg shadow-slate-200 w-full ${progressPercentage===0 && input.length> 0 ? "progressnone" : ""}`} >
         <div className="flex" style={{alignItems: "center", justifyContent: "space-evenly"}}>
           <div className="w-full bg-slate-100 h-1 m-2 md:w-5/6">
           <div className="bg-teal-400 h-1 rounded" style={{width: `${width}%`}}>{}</div>
