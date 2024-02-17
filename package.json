@@ -16,6 +16,7 @@
     "dotenv-cli": "^7.3.0",
     "kuromojin": "^3.0.0",
     "log": "^6.3.1",
+    "react-timer-hook": "^3.0.7",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
   },
