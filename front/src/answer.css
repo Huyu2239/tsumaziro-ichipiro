@@ -1,0 +1,34 @@
+.is-style-scroll {
+    position: relative;
+
+    
+    height:400px;
+    border: 12px solid transparent;
+    border-left-width: 48px;
+    background: linear-gradient(#fff, #fff), linear-gradient(#b8c5db,#b8c5db);
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
+}
+.is-style-scroll:before,
+.is-style-scroll:after {
+    display: inline-block;
+    position: absolute;
+    content: "";
+}
+.is-style-scroll:before {
+    left: -36px;
+    top: -32px;
+    width: 24px;
+    height: calc(100% + 64px);
+    background: #4d4d4d;
+}
+.is-style-scroll:after {
+    left: -48px;
+    top: -20px;
+    width: 48px;
+    height: calc(100% + 40px);
+    background: #4973b8;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
