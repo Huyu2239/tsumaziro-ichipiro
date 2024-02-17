@@ -2,13 +2,30 @@ import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import wanko from "@/assets/wanko.svg";
 import prompt from "@/assets/prompt.svg";
+import '../top.css';
+
+
+import {convertToHiragana} from "./hiragana";
 
 type FAQ = {
   question: string;
   pageTitle: string;
 };
+let progressPercentage:number 
+
+// uniqueFilteredFaqs pagetitleの異なるものをlist化
+function uniquePageTitle(faqs: FAQ[]): FAQ[] {
+  const uniqueFaqs: FAQ[] = [];
+  for (const faq of faqs) {
+    if (!uniqueFaqs.some((uFaq) => uFaq.pageTitle === faq.pageTitle)) {
+      uniqueFaqs.push(faq);
+    }
+  }
+  return uniqueFaqs;
+}
 
 export function TopPage(): JSX.Element {
+  const [width, setWidth] = useState<Number>(0);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -19,29 +36,38 @@ export function TopPage(): JSX.Element {
       const res = await fetch("/api/faqs");
       const faqs = await res.json();
       localStorage.setItem("faqs", JSON.stringify(faqs));
-      setDefaultFaqs(faqs.slice(0, 5));
+      setDefaultFaqs(uniquePageTitle(faqs).slice(0, 5));
       setIsLoading(false);
     })();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     setInput(e.target.value);
     if (e.target.value === "") {
       setFaqs([]);
-      return;
+      setWidth(0)
+      progressPercentage = 0
     }
 
     const faqs = JSON.parse(localStorage.getItem("faqs")!);
-    const filteredFaqs = faqs.filter((faq: FAQ) =>
-      faq.question.toLowerCase().includes(e.target.value.toLowerCase()),
+    const uniqueFaqs = uniquePageTitle(faqs);
+    
+    const hiraganaQuestions = await Promise.all(faqs.map((faq: FAQ) => 
+      convertToHiragana(faq.question.toLowerCase())));
+    const hiraganaFilterValue = await convertToHiragana(e.target.value.toLowerCase());
+    const filteredFaqs = faqs.filter((_: string, index: number) =>
+      hiraganaQuestions[index].includes(hiraganaFilterValue)
     );
-    setFaqs(filteredFaqs);
+    const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
+    
+    setFaqs(uniqueFilteredFaqs);
+    progressPercentage = uniqueFilteredFaqs.length === 0 ? 0 : Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1)));
+    setWidth(progressPercentage);
+    console.log(progressPercentage);
   };
-
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
   return (
     <>
       <div className="flex flex-col">
@@ -87,22 +113,42 @@ export function TopPage(): JSX.Element {
           <>
             <span className="text-[#2B546A] text-base">{`${faqs.length} questions matched`}</span>
             <ul className="pt-4">
-              {faqs.map(faq => (
-                <li
-                  key={faq.question}
-                  className="pl-2 py-2 text-lg text-[#2B546A] list-inside list-square marker:text-[#57D5C1] hover:bg-[#F6F6F7] rounded-md"
-                >
-                  <Link
-                    to={`/pages/${faq.pageTitle}`}
-                    data-test="question-title"
+
+              
+              {progressPercentage===0 && input.length > 0 ? (
+                <div className="flex justify-center items-center h-28">
+                  <li className="bg-[#57D5C1] p-4 rounded-full font-bold">
+                    <Link to={"/pages/game"}>ゲームをする</Link>
+                  </li>
+                </div>
+              ):(
+                faqs.map(faq => (
+                  <li
+                    key={faq.question}
+                    className="pl-2 py-2 text-lg text-[#2B546A] list-inside list-square marker:text-[#57D5C1] hover:bg-[#F6F6F7] rounded-md"
                   >
-                    {faq.question}
-                  </Link>
-                </li>
-              ))}
+                    <Link
+                      to={`/pages/${faq.pageTitle}`}
+                      data-test="question-title"
+                    >
+                      {faq.question}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </>
         )}
+      </div>
+      <div className={`bg-white shadow-lg shadow-slate-200 w-full ${progressPercentage === 0 && input.length > 0 ? "progressnone" : ""}`} >
+        <div className="flex" style={{ alignItems: "center", justifyContent: "space-evenly" }}>
+          <div className="w-full bg-slate-100 h-1 m-2 md:w-5/6">
+            <div className="bg-teal-400 h-1 rounded afterninja" style={{ width: `${width}%`, position: "relative" }}>
+              {/* <img src={progressDog} alt="progressDog" width="100px" style={{marginLeft: "auto", display: "block"}} /> */}
+            </div>
+          </div>
+          <div className="p-1 bg-teal-50 rounded-lg text-xs text-teal-400 font-medium text-center">{`${width}%`}</div>
+        </div>
       </div>
     </>
   );
