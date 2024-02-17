@@ -8,7 +8,19 @@ type FAQ = {
   pageTitle: string;
 };
 
+// uniqueFilteredFaqs pagetitleの異なるものをlist化
+function uniquePageTitle(faqs: FAQ[]): FAQ[] {
+  const uniqueFaqs: FAQ[] = [];
+  for (const faq of faqs) {
+    if (!uniqueFaqs.some((uFaq) => uFaq.pageTitle === faq.pageTitle)) {
+      uniqueFaqs.push(faq);
+    }
+  }
+  return uniqueFaqs;
+}
+
 export function TopPage(): JSX.Element {
+  const [width, setWidth] = useState<Number>(0);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -32,17 +44,14 @@ export function TopPage(): JSX.Element {
     }
 
     const faqs = JSON.parse(localStorage.getItem("faqs")!);
+    const uniqueFaqs = uniquePageTitle(faqs);
     const filteredFaqs = faqs.filter((faq: FAQ) =>
       faq.question.toLowerCase().includes(e.target.value.toLowerCase()),
     );
-    // uniqueFilteredFaqs pagetitleの異なるものをlist化
-    const uniqueFilteredFaqs: FAQ[] = [];
-    for (const filteredFaq of filteredFaqs) {
-      if (!uniqueFilteredFaqs.some((faq) => faq.pageTitle === filteredFaq.pageTitle)) {
-        uniqueFilteredFaqs.push(filteredFaq);
-      }
-    }
+    const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
     setFaqs(uniqueFilteredFaqs);
+    setWidth(Number(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1))));
+    console.log(faqs, filteredFaqs);
   };
 
   if (isLoading) {
@@ -110,6 +119,14 @@ export function TopPage(): JSX.Element {
             </ul>
           </>
         )}
+      </div>
+      <div className="bg-white shadow-lg shadow-slate-200 w-full ">
+        <div className="flex" style={{alignItems: "center", justifyContent: "space-evenly"}}>
+          <div className="w-full bg-slate-100 h-1 m-2 md:w-5/6">
+          <div className="bg-teal-400 h-1 rounded" style={{width: `${width}%`}}>{}</div>
+          </div>
+          <div className="p-1 bg-teal-50 rounded-lg text-xs text-teal-400 font-medium text-center">{`${width}%`}</div>
+        </div>
       </div>
     </>
   );
