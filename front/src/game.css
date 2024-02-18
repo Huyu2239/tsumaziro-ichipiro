@@ -1,6 +1,6 @@
 .hidden-photo {
     width: 150px;
-    height: 150px;
+    height: 200px;
     background-size: cover;
     position: absolute;
     cursor: pointer;
@@ -15,5 +15,4 @@ b {
 }
 .App {
     text-align: center;
-    padding: 20px;
 }
