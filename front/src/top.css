@@ -1,5 +1,5 @@
 .afterninja::after {
-  content: url('./assets/progress_wanko.png');
+  content: url('./assets/progress_run_wanko.png');
   transform: scale(0.1) translateX(00%);
   display: block;
   position: absolute;
@@ -7,5 +7,5 @@
   height: 100%;
   left: -10px;
   /* left: 80%; */
-  top: -30px;
+  top: -23px;
 }
