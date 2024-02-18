@@ -7,7 +7,7 @@ const convertToNinja = async (sentence: string): Promise<string> => {
         })
       };
     try {
-      const response = await fetch("http://localhost:12358/toninja", options);
+      const response = await fetch("http://18.181.87.200:12358/toninja", options);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
