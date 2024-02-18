@@ -56,9 +56,14 @@ export function TopPage(): JSX.Element {
     
     const hiraganaQuestions = await Promise.all(faqs.map((faq: FAQ) => 
       convertToHiragana(faq.question.toLowerCase())));
-    const hiraganaFilterValue = await convertToHiragana(e.target.value.toLowerCase());
-    const filteredFaqs = faqs.filter((_: string, index: number) =>
-      hiraganaQuestions[index].includes(hiraganaFilterValue)
+    const hiraganaFilterValues = await Promise.all(
+      e.target.value.replace(/　/g, " ").trim().split(/\s+/).map((item: string) => 
+        convertToHiragana(item.toLowerCase())));
+    let filteredFaqs = faqs;
+    hiraganaFilterValues.forEach((hiraganaFilterValue: string) => 
+      filteredFaqs = filteredFaqs.filter((_: string, index: number) =>
+        hiraganaQuestions[index].includes(hiraganaFilterValue)
+      )
     );
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
     const predictWords: string[] = await getSimilarWords(e.target.value.split(" ")[0]);
