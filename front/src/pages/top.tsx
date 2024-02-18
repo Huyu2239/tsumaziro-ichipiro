@@ -6,6 +6,7 @@ import '../top.css';
 
 
 import {convertToHiragana} from "./hiragana";
+import { getSimilarWords } from "./getSimilarWords";
 
 type FAQ = {
   question: string;
@@ -30,6 +31,7 @@ export function TopPage(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [defaultFaqs, setDefaultFaqs] = useState<FAQ[]>([]);
+  const [predictWords, setPredictWords] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -59,6 +61,9 @@ export function TopPage(): JSX.Element {
       hiraganaQuestions[index].includes(hiraganaFilterValue)
     );
     const uniqueFilteredFaqs = uniquePageTitle(filteredFaqs);
+    const predictWords: string[] = await getSimilarWords(e.target.value.split(" ")[0]);
+    console.log(predictWords);
+    setPredictWords(predictWords);
     
     setFaqs(uniqueFilteredFaqs);
     progressPercentage = uniqueFilteredFaqs.length === 0 ? 0 : Math.round(100*(1-(uniqueFilteredFaqs.length-1)/(uniqueFaqs.length-1)));
@@ -116,11 +121,15 @@ export function TopPage(): JSX.Element {
 
               
               {progressPercentage===0 && input.length > 0 ? (
+                <div>
                 <div className="flex justify-center items-center h-28">
-                  <li className="bg-[#57D5C1] p-4 rounded-full font-bold">
-                    <Link to={"/pages/game"}>ゲームをする</Link>
-                  </li>
+                  <p>もしかして:{predictWords.join("、")}</p><br/>
+                  
                 </div>
+                <li className="bg-[#57D5C1] p-4 rounded-full font-bol flex justify-center">
+                <Link to={"/pages/game"}>ゲームをする</Link>
+              </li>
+              </div>
               ):(
                 faqs.map(faq => (
                   <li
